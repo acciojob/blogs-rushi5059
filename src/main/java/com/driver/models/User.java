@@ -1,31 +1,26 @@
-package com.driver.models;
+package  com.driver.models;
 
+
+import org.springframework.boot.test.autoconfigure.data.cassandra.DataCassandraTest;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User {
-
+@Table(name = "user_info")
+public  class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private  int id;
 
-    @Column(name = "userName")
-    private String username;
-
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "firstName")
-    private String firstName;
-
-    @Column(name = "lastName")
+    private  String username;
+    private  String password;
+    private  String firstName;
     private String lastName;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    List<Blog> blogList = new ArrayList<>();
+    @OneToMany(mappedBy = "user" ,cascade =CascadeType.ALL)
+    private List<Blog> blogList = new ArrayList<>();
 
     public User(int id, String username, String password, String firstName, String lastName, List<Blog> blogList) {
         this.id = id;

@@ -1,49 +1,43 @@
-package com.driver.models;
+package  com.driver.models;
 
-import org.apache.catalina.User;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "BlogInfo")
 public class Blog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int id;
-
-    @Column(name = "title")
     private String title;
-
-    @Column(name = "content")
     private String content;
 
-    @Column(name = "pubDate")
     @CreationTimestamp
-    Date pubDate;
+    private Date pubDate;
 
     @ManyToOne
     @JoinColumn
-    User user;
+    private User user;
 
-    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL)
-    List<Image> imageList = new ArrayList<>();
+    @OneToMany(mappedBy = "blog",cascade = CascadeType.ALL)
+    private List<Image> imageList = new ArrayList<>();
 
-    public Blog(int id, String title, String content, Date pubDate, User user, List<Image> imageList) {
+    public Blog(){
+
+    }
+    public Blog(int id, String title, String content, Date pubDate,User user,List<Image> imageList) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.pubDate = pubDate;
-        this.user = user;
+        this.user= user;
         this.imageList = imageList;
-    }
-
-
-    public Blog(){
 
     }
 

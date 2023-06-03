@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class ImageService {
@@ -19,45 +17,67 @@ public class ImageService {
 
     public Image addImage(Integer blogId, String description, String dimensions){
         //add an image to the blog
-        Optional<Blog> optionalBlog = blogRepository2.findById(blogId);
-        Blog blog = optionalBlog.get();
-
         Image image = new Image();
         image.setDescription(description);
         image.setDimensions(dimensions);
 
-        blog.getImageList().add(image);
-        blogRepository2.save(blog);
+        Blog blog = blogRepository2.findById(blogId).get();
 
         image.setBlog(blog);
+        blog.getImageList().add(image);
 
+
+
+        blogRepository2.save(blog);
         return image;
+
     }
 
     public void deleteImage(Integer id){
         imageRepository2.deleteById(id);
+
     }
 
     public int countImagesInScreen(Integer id, String screenDimensions) {
         //Find the number of images of given dimensions that can fit in a screen having `screenDimensions`
 
-        int count=0;
-        String[] dimarr=screenDimensions.split("X");
-        Image image=imageRepository2.findById(id).get();
+        //4X4 = 4/2*4/2 == 2*2== 4 images
+        Image image = imageRepository2.findById(id).get();
 
-        String dimensionOfImage=image.getDimensions();
-        String[] imgarr=dimensionOfImage.split("X");
-        int imgx=Integer.parseInt(imgarr[0]);
-        int imgy=Integer.parseInt(imgarr[1]);
+        String imageDimensions = image.getDimensions();
+        //image dimension is in String format ex: 2X2
+        //we have to convert it into integer like 2*2=4
+        //below is the process to calculate image dimension as width and height
 
-        int dimx=Integer.parseInt(dimarr[0]);
-        int dimy=Integer.parseInt(dimarr[1]);
+        int indexOfX = imageDimensions.indexOf('X');
 
-        //4X4 = 4/2*4/2 = 4 images
-        int countx=dimx/imgx;
-        int county=dimy/imgy;
-        count=countx*county;
+        String x = imageDimensions.substring(0,indexOfX);
+        String y = imageDimensions.substring(indexOfX+1);
+
+        int imageWidth = Integer.parseInt(x);
+        int imageHeight= Integer.parseInt(y);
+
+
+        //Like above, Similarly find screen dimension in integer format
+
+        int screenIndexOfX = screenDimensions.indexOf('X');
+
+        String screenX = screenDimensions.substring(0,screenIndexOfX);
+        String screenY = screenDimensions.substring(screenIndexOfX+1);
+
+        int screenWidth = Integer.parseInt(screenX);
+        int screenHeight = Integer.parseInt(screenY);
+
+        //THIS COMMENTED LOGIC IS NOT WORKING DON'T KNOW WHY. ASK IN DOUBT
+        // int totalImageDimension = imageWidth * imageHeight;
+        // int totalScreenDimension = screenWidth * screenHeight;
+        // int count = totalScreenDimension/totalImageDimension;
+
+
+        // Final count
+        int count = (screenWidth/imageWidth) * (screenHeight/imageHeight);
 
         return count;
+
     }
 }
